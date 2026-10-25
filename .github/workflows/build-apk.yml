@@ -28,7 +28,7 @@ jobs:
 
       - name: Add dependencies
         working-directory: build_app
-        run: flutter pub add http file_picker path_provider open_filex shared_preferences
+        run: flutter pub add http file_picker path_provider open_filex shared_preferences  && flutter pub add file_picker:^8.1.4
 
       - name: Patch AndroidManifest (internet + http access, app name)
         working-directory: build_app
