@@ -28,7 +28,7 @@ jobs:
 
       - name: Add dependencies
         working-directory: build_app
-        run: flutter pub add http file_picker path_provider open_filex shared_preferences  && flutter pub add file_picker:^8.1.4
+        run: flutter pub add http file_picker:^8.1.4 path_provider open_filex shared_preferences
 
       - name: Patch AndroidManifest (internet + http access, app name)
         working-directory: build_app
@@ -37,6 +37,19 @@ jobs:
           sed -i 's|<application|<uses-permission android:name="android.permission.INTERNET"/>\n    <application|' $M
           sed -i 's|android:label="[^"]*"|android:label="tarak" android:usesCleartextTraffic="true"|' $M
           cat $M
+
+      - name: Force compileSdk 36 for all plugins
+        run: |
+          mkdir -p ~/.gradle/init.d
+          cat > ~/.gradle/init.d/force-sdk.gradle << 'EOF'
+          allprojects {
+            afterEvaluate { project ->
+              if (project.hasProperty('android')) {
+                project.android.compileSdkVersion 36
+              }
+            }
+          }
+          EOF
 
       - name: Build release APK
         working-directory: build_app
